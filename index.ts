@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import * as fs from "fs";
 import * as path from "path";
 export default function requireAll(mod: NodeModule) {
@@ -5,6 +7,7 @@ export default function requireAll(mod: NodeModule) {
 }
 
 export function generateImportsExports(dir: string) {
+    console.log(dir + ": generating...");
     const files = fs.readdirSync(dir).filter((file) => {
         if (file.endsWith(".ts")) return true;
         try {
@@ -48,3 +51,8 @@ export function crawl(root: string, flagName: string) {
         } catch {}
     }
 }
+
+let root: string = process.argv.length >= 2 ? process.argv[1] : ".";
+let flagName: string = process.argv.length >= 3 ? process.argv[1] : ".autoIndex";
+console.log(`Starting index generation with root: ${root} and flag name: ${flagName}.`);
+crawl(root, flagName);
