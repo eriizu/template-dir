@@ -2,11 +2,8 @@
 
 import * as fs from "fs";
 import * as path from "path";
-export default function requireAll(mod: NodeModule) {
-    console.log(mod);
-}
 
-export function generateImportsExports(dir: string) {
+function generateImportsExports(dir: string) {
     console.log(dir + ": candidate found.");
     const files = fs.readdirSync(dir).filter((file) => {
         if (file.endsWith(".ts")) return true;
@@ -33,9 +30,7 @@ export function generateImportsExports(dir: string) {
     console.log(dir + ": index generated.");
 }
 
-export function crawl(root: string, flagName: string) {
-    // const files = fs.readdirSync(root).filter((file) => file.endsWith(".ts"));
-    console.log(root);
+export default function crawl(root: string, flagName: string) {
     const folders = fs.readdirSync(root).filter((file) => {
         let fpath = path.join(root, file);
         let stat = fs.statSync(fpath);
@@ -54,6 +49,6 @@ export function crawl(root: string, flagName: string) {
 }
 
 let root: string = process.argv.length >= 3 ? process.argv[2] : ".";
-let flagName: string = process.argv.length >= 4 ? process.argv[3] : ".autoIndex";
+let flagName: string = process.argv.length >= 4 ? process.argv[3] : ".auto-index";
 console.log(`Starting index generation with root: ${root} and flag name: ${flagName}.`);
 crawl(root, flagName);
