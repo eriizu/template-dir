@@ -1,6 +1,6 @@
 {
     "name": "@eriizu/index-generator",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Small utility used to generate index files that re-export all files within a folder.",
     "main": "index.js",
     "license": "MIT",
