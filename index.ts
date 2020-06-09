@@ -6,6 +6,7 @@ import * as path from "path";
 function generateImportsExports(dir: string) {
     console.log(dir + ": candidate found.");
     const files = fs.readdirSync(dir).filter((file) => {
+        if (file === "index.ts") return false;
         if (file.endsWith(".ts")) return true;
         try {
             let fpath = path.join(dir, file);
@@ -13,11 +14,15 @@ function generateImportsExports(dir: string) {
             if (stat.isDirectory()) {
                 let indexStat = fs.statSync(path.join(fpath, "index.ts"));
                 return indexStat.isFile();
+            } else {
+                return false;
             }
         } catch {
             return false;
         }
     });
+
+    console.log(files);
 
     let builder: string[] = ["// Automatically generated index"];
 
