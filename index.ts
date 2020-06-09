@@ -22,7 +22,12 @@ function generateImportsExports(dir: string) {
     let builder: string[] = ["// Automatically generated index"];
 
     for (let filename of files) {
-        builder.push(`export * from "./${filename.substring(0, filename.length - 3)}";`);
+        let importName: string;
+
+        if (filename.endsWith(".ts")) importName = filename.substring(0, filename.length - 3);
+        else importName = filename;
+
+        builder.push(`export * from "./${importName}";`);
     }
 
     let indexDest = path.join(dir, "index.ts");
