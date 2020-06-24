@@ -20,5 +20,7 @@
         "semantic-versioning": "^1.0.2",
         "typescript": "^3.9.3"
     },
-    "dependencies": {}
+    "dependencies": {
+        "change-case": "^4.1.1"
+    }
 }

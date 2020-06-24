@@ -2,6 +2,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import * as changeCase from "change-case";
 
 function generateImportsExports(dir: string) {
     console.log(dir + ": candidate found.");
@@ -44,25 +45,46 @@ function generateImportsExports(dir: string) {
     console.log(dir + ": index generated.");
 }
 
-export default function crawl(root: string, flagName: string) {
-    const folders = fs.readdirSync(root).filter((file) => {
-        let fpath = path.join(root, file);
-        let stat = fs.statSync(fpath);
-        if (stat.isDirectory()) {
-            return true;
-        }
-    });
+function getNewFilename(file: string, templateString: string, replaceWith: string): string {
+    let filename = path.basename(file);
 
-    for (let dir of folders) {
-        crawl(path.join(root, dir), flagName);
+    let teststr = changeCase.constantCase(templateString);
+    if (filename.includes(teststr)) {
+        return filename.replace(teststr, changeCase.constantCase(replaceWith));
+    }
+    teststr = changeCase.snakeCase(templateString);
+    if (filename.includes(teststr)) {
+        return filename.replace(teststr, changeCase.snakeCase(replaceWith));
+    }
+    teststr = changeCase.camelCase(templateString);
+    if (filename.includes(teststr)) {
+        return filename.replace(teststr, changeCase.camelCase(replaceWith));
+    }
+    teststr = changeCase.pascalCase(templateString);
+    if (filename.includes(teststr)) {
+        return filename.replace(teststr, changeCase.pascalCase(replaceWith));
+    }
+    return null;
+}
+
+function renameFile(file: string, templateString: string, replaceWith: string) {
+    let filename = getNewFilename(file, templateString, replaceWith);
+    if (filename) fs.renameSync(file, path.join(path.dirname(file), filename));
+}
+
+export default function crawl(root: string, templateString: string, replaceWith: string) {
+    const files = fs.readdirSync(root);
+
+    for (let file of files) {
         try {
-            fs.statSync(path.join(root, dir, flagName));
-            generateImportsExports(path.join(root, dir));
+            let stat = fs.statSync(path.join(root, file));
+            if (stat.isDirectory()) crawl(path.join(root, file), templateString, replaceWith);
+            renameFile(path.join(root, file), templateString, replaceWith);
         } catch {}
     }
 }
 
-let root: string = process.argv.length >= 3 ? process.argv[2] : ".";
-let flagName: string = process.argv.length >= 4 ? process.argv[3] : ".auto-index";
-console.log(`Starting index generation with root: ${root} and flag name: ${flagName}.`);
-crawl(root, flagName);
+// let root: string = process.argv.length >= 3 ? process.argv[2] : ".";
+// let flagName: string = process.argv.length >= 4 ? process.argv[3] : ".auto-index";
+// console.log(`Starting index generation with root: ${root} and flag name: ${flagName}.`);
+crawl("./test", "templateStr", "patate_sautee");
