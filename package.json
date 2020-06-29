@@ -1,18 +1,19 @@
 {
-    "name": "@eriizu/index-generator",
-    "version": "1.1.5",
+    "name": "@eriizu/template-dir",
+    "version": "1.0.0",
     "description": "Small utility used to generate index files that re-export all files within a folder.",
     "main": "index.js",
     "license": "MIT",
     "bin": {
-        "index-generator": "index.js"
+        "template-dir": "index.js"
     },
     "files": [],
     "scripts": {
         "prepack": "yarn tsc"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
+        "registry": "https://registry.npmjs.org",
+        "access": "public"
     },
     "devDependencies": {
         "@types/node": "^14.0.10",
