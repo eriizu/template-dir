@@ -41,8 +41,7 @@ function transformFile(file: string, templateString: string, replaceWith: string
     console.log(updatedContents);
 
     if (updatedContents) {
-        const fd = fs.openSync(file, "r+");
-        fs.writeSync(fd, updatedContents, null, "utf-8");
+        fs.writeFileSync(file, updatedContents, { encoding: "utf-8" });
     }
 }
 
