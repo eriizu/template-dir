@@ -1,6 +1,6 @@
 {
     "name": "@eriizu/template-dir",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Small utility used to generate index files that re-export all files within a folder.",
     "main": "index.js",
     "license": "MIT",
