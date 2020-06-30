@@ -5,40 +5,44 @@ import * as path from "path";
 import * as changeCase from "change-case";
 
 // Would be way better off if there was some kind of array for matching and replacing patterns.
-function getNewFilename(file: string, templateString: string, replaceWith: string): string {
-    let filename = path.basename(file);
+function replaceTemplateStr(src: string, templateString: string, replaceWith: string): string {
+    let out = src;
 
     let teststr = changeCase.constantCase(templateString);
-    while (filename.includes(teststr)) {
-        filename = filename.replace(teststr, changeCase.constantCase(replaceWith));
+    while (out.includes(teststr)) {
+        out = out.replace(teststr, changeCase.constantCase(replaceWith));
     }
     teststr = changeCase.snakeCase(templateString);
-    while (filename.includes(teststr)) {
-        filename = filename.replace(teststr, changeCase.snakeCase(replaceWith));
+    while (out.includes(teststr)) {
+        out = out.replace(teststr, changeCase.snakeCase(replaceWith));
     }
     teststr = changeCase.camelCase(templateString);
-    while (filename.includes(teststr)) {
-        filename = filename.replace(teststr, changeCase.camelCase(replaceWith));
+    while (out.includes(teststr)) {
+        out = out.replace(teststr, changeCase.camelCase(replaceWith));
     }
     teststr = changeCase.pascalCase(templateString);
-    while (filename.includes(teststr)) {
-        filename = filename.replace(teststr, changeCase.pascalCase(replaceWith));
+    while (out.includes(teststr)) {
+        out = out.replace(teststr, changeCase.pascalCase(replaceWith));
     }
-    return filename == path.basename(file) ? null : filename;
+    return out == src ? null : out;
 }
 
 function renameFile(file: string, templateString: string, replaceWith: string) {
-    let filename = getNewFilename(file, templateString, replaceWith);
-    if (filename) fs.renameSync(file, path.join(path.dirname(file), filename));
+    let filename = path.basename(file);
+
+    filename = replaceTemplateStr(file, templateString, replaceWith);
+    if (filename) fs.renameSync(file, path.join(path.dirname(file), path.basename(filename)));
 }
 
 function transformFile(file: string, templateString: string, replaceWith: string) {
-    const data = fs.readFileSync(file);
-    const updatedContents = getNewFilename(data.toString(), templateString, replaceWith);
+    const data = fs.readFileSync(file, { encoding: "utf-8" });
+    console.log(data.toString());
+    const updatedContents = replaceTemplateStr(data.toString(), templateString, replaceWith);
+    console.log(updatedContents);
 
     if (updatedContents) {
         const fd = fs.openSync(file, "r+");
-        fs.writeSync(fd, updatedContents);
+        fs.writeSync(fd, updatedContents, null, "utf-8");
     }
 }
 
